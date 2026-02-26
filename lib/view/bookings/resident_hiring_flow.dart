@@ -266,7 +266,7 @@ class _ResidentHiringFlowState extends State<ResidentHiringFlow> {
       // Go to contract screen
       Navigator.push(context, FadePageRoute(
         page: ContractScreen(
-          bookingId: 'RES-${DateTime.now().millisecondsSinceEpoch}', 
+          bookingId: '00000000-0000-0000-0001-${DateTime.now().millisecondsSinceEpoch}', 
           serviceType: 'عاملة مقيمة ($_selectedNationality) - $_selectedDuration شهر - $_selectedPackage',
         )
       ));

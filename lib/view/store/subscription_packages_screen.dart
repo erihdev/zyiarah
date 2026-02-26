@@ -98,7 +98,7 @@ class SubscriptionPackagesScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => ContractScreen(
-                            bookingId: 'SUB-${DateTime.now().millisecondsSinceEpoch}',
+                            bookingId: '00000000-0000-0000-0000-${DateTime.now().millisecondsSinceEpoch}',
                             serviceType: 'اشتراك ساعة - ${pkg['title']} (${pkg['visits']})',
                           ),
                         ));
