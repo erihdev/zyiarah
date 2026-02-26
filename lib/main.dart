@@ -5,12 +5,14 @@ import 'package:zyiarah/core/config/supabase_config.dart';
 import 'package:zyiarah/view/auth/auth_screen.dart';
 import 'package:zyiarah/view/auth/auth_gate_screen.dart';
 import 'package:zyiarah/view/home/home_screen.dart';
+import 'package:zyiarah/view/admin/admin_login_screen.dart';
 import 'package:zyiarah/view_model/auth_view_model.dart';
 import 'package:zyiarah/view_model/wallet_view_model.dart';
 import 'package:zyiarah/view_model/store_view_model.dart';
 import 'package:zyiarah/view_model/order_view_model.dart';
 import 'package:zyiarah/view_model/profile_view_model.dart';
 import 'package:zyiarah/view_model/worker_view_model.dart';
+import 'package:zyiarah/view_model/admin_view_model.dart';
 import 'package:zyiarah/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:zyiarah/firebase_options.dart';
@@ -135,6 +137,7 @@ class ZyiarahApp extends StatelessWidget {
         ChangeNotifierProvider(create: (_) => OrderViewModel()),
         ChangeNotifierProvider(create: (_) => ProfileViewModel()),
         ChangeNotifierProvider(create: (_) => WorkerViewModel()),
+        ChangeNotifierProvider(create: (_) => AdminViewModel()),
       ],
       child: MaterialApp(
         navigatorKey: navigatorKey,
@@ -169,6 +172,10 @@ class ZyiarahApp extends StatelessWidget {
             child: child!,
           );
         },
+        initialRoute: '/',
+        routes: {
+          '/admin': (context) => const AdminLoginScreen(),
+        },
         home: _getInitialScreen(),
       ),
     );
@@ -183,4 +190,3 @@ class ZyiarahApp extends StatelessWidget {
     }
   }
 }
-
