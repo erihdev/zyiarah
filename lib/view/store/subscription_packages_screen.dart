@@ -42,7 +42,7 @@ class SubscriptionPackagesScreen extends StatelessWidget {
         itemBuilder: (context, index) {
           final pkg = hourlyPackages[index];
           return Container(
-            margin: const EdgeInsets.bottom(20),
+            margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [pkg['color'], pkg['color'].withOpacity(0.8)],
