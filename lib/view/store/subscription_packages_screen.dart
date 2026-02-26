@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:zyiarah/view/contracts/contract_screen.dart';
 
 class SubscriptionPackagesScreen extends StatelessWidget {
   const SubscriptionPackagesScreen({super.key});
@@ -95,9 +96,12 @@ class SubscriptionPackagesScreen extends StatelessWidget {
                     width: double.infinity,
                     child: ElevatedButton(
                       onPressed: () {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('تم اختيار ${pkg['title']} - جاري الانتقال للدفع')),
-                        );
+                        Navigator.push(context, MaterialPageRoute(
+                          builder: (context) => ContractScreen(
+                            bookingId: 'SUB-${DateTime.now().millisecondsSinceEpoch}',
+                            serviceType: 'اشتراك ساعة - ${pkg['title']} (${pkg['visits']})',
+                          ),
+                        ));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.white,

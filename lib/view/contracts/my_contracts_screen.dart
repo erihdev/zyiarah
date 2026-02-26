@@ -27,8 +27,8 @@ class _MyContractsScreenState extends State<MyContractsScreen> {
       final response = await _supabase
           .from('contracts')
           .select()
-          .eq('client_id', user.id)
-          .order('signed_at', ascending: false);
+          .eq('user_id', user.id) // FIXED: was client_id
+          .order('created_at', ascending: false);
 
       setState(() {
         _contracts = List<Map<String, dynamic>>.from(response);

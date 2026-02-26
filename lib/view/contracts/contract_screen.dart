@@ -2,6 +2,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:signature/signature.dart';
+import 'dart:ui';
 
 class ContractScreen extends StatefulWidget {
   final String bookingId;
@@ -25,8 +26,8 @@ class _ContractScreenState extends State<ContractScreen> {
     super.initState();
     _signatureController = SignatureController(
       penStrokeWidth: 3,
-      penColor: Colors.black,
-      exportBackgroundColor: Colors.white,
+      penColor: Colors.white,
+      exportBackgroundColor: const Color(0xFF1E3A8A),
     );
   }
 
@@ -53,30 +54,27 @@ class _ContractScreenState extends State<ContractScreen> {
       final supabase = Supabase.instance.client;
       final user = supabase.auth.currentUser;
 
-      // 1. Export signature to image
       final Uint8List? signatureImage = await _signatureController.toPngBytes();
       
       String? signatureUrl;
       if (signatureImage != null) {
-        // 2. Upload to Supabase Storage (assuming 'signatures' bucket exists)
         final path = 'signatures/${widget.bookingId}_${DateTime.now().millisecondsSinceEpoch}.png';
         try {
           await supabase.storage.from('signatures').uploadBinary(path, signatureImage);
           signatureUrl = supabase.storage.from('signatures').getPublicUrl(path);
         } catch (e) {
-          debugPrint('Signature upload failed (bucket might be missing): $e');
-          // Proceed anyway as fallback for demo
+          debugPrint('Signature upload error: $e');
         }
       }
 
-      // 3. Record contract acceptance in contracts table
       await supabase.from('contracts').insert({
         'booking_id': widget.bookingId,
-        'client_id': user?.id,
+        'user_id': user?.id,
         'status': 'active',
-        'signed_at': DateTime.now().toIso8601String(),
-        'service_type': widget.serviceType,
+        'created_at': DateTime.now().toIso8601String(),
         'signature_url': signatureUrl,
+        'start_date': DateTime.now().toIso8601String().split('T')[0],
+        'end_date': DateTime.now().add(const Duration(days: 365)).toIso8601String().split('T')[0],
       });
 
       setState(() {
@@ -85,155 +83,242 @@ class _ContractScreenState extends State<ContractScreen> {
       });
 
       if (mounted) {
-        _showMsg('تم قبول العقد وتوقيعه بنجاح', isError: false);
+        _showMsg('تم اعتماد العقد بنجاح', isError: false);
         await Future.delayed(const Duration(seconds: 1));
         Navigator.pop(context, true);
       }
     } catch (e) {
       setState(() => _isSigning = false);
-      if (mounted) _showMsg('فشل تسجيل العقد: $e');
+      if (mounted) _showMsg('خطأ في التسجيل: $e');
     }
   }
 
   void _showMsg(String msg, {bool isError = true}) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(msg),
-        backgroundColor: isError ? Colors.red : Colors.green,
+        content: Text(msg, style: const TextStyle(fontFamily: 'Tajawal')),
+        backgroundColor: isError ? Colors.redAccent : const Color(0xFF1E3A8A),
+        behavior: SnackBarBehavior.floating,
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    const royalBlue = Color(0xFF1E3A8A); // Deep Luxury Blue
+
     return Scaffold(
+      backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('العقد والتوقيع الإلكتروني'),
-        backgroundColor: Colors.teal.shade800,
+        title: const Text('العقد الرقمي الموحد', style: TextStyle(fontWeight: FontWeight.bold)),
+        backgroundColor: royalBlue,
         foregroundColor: Colors.white,
+        elevation: 0,
+        centerTitle: true,
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Contract Header
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.teal.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.teal.shade200),
-              ),
-              child: Column(
-                children: [
-                  const Text('عقد تقديم خدمة منزليّة', 
-                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  Text(widget.serviceType, 
-                    style: TextStyle(fontSize: 16, color: Colors.teal.shade800)),
-                  Text('رقم الطلب: ${widget.bookingId.substring(0, 8)}'),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-            const Text('بنود العقد الأساسية:', 
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-
-            _buildClause('البند الأول:', 'يلتزم الطرف الأول بتوفير الكوادر المؤهلة والمدربة للخدمة.'),
-            _buildClause('البند الثاني:', 'يلتزم الطرف الثاني بتسديد المبالغ في موعدها المحدد.'),
-            _buildClause('البند الثالث:', 'يعد هذا التوقيع الإلكتروني إقراراً بصحة البيانات والموافقة على الشروط.'),
-
-            const SizedBox(height: 24),
-            const Text('التوقيع الإلكتروني:', 
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            const SizedBox(height: 12),
-
-            // Signature Pad
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.shade400),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Column(
-                children: [
-                  Signature(
-                    controller: _signatureController,
-                    height: 180,
-                    backgroundColor: Colors.grey.shade50,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [royalBlue.withOpacity(0.05), Colors.white],
+          ),
+        ),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Header Badge
+              Center(
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                  decoration: BoxDecoration(
+                    color: royalBlue.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(20),
                   ),
-                  Container(
-                    color: Colors.grey.shade200,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      const Icon(Icons.gavel, size: 16, color: royalBlue),
+                      const SizedBox(width: 8),
+                      Text('اتفاقية تقديم خدمة قانونية', 
+                        style: TextStyle(color: royalBlue, fontWeight: FontWeight.bold, fontSize: 12)),
+                    ],
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+
+              // Glassmorphism Contract Info
+              ClipRRect(
+                child: BackdropFilter(
+                  filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(20),
+                    decoration: BoxDecoration(
+                      color: royalBlue.withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(color: royalBlue.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10)),
+                      ],
+                    ),
+                    child: Column(
                       children: [
-                        TextButton.icon(
-                          onPressed: () => _signatureController.clear(),
-                          icon: const Icon(Icons.clear, color: Colors.red),
-                          label: const Text('مسح التوقيع', 
-                            style: TextStyle(color: Colors.red)),
+                        const Icon(Icons.description, color: Colors.white, size: 40),
+                        const SizedBox(height: 12),
+                        const Text('تفاصيل التعاقد', 
+                          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                        const SizedBox(height: 8),
+                        Text(widget.serviceType, 
+                          textAlign: TextAlign.center,
+                          style: const TextStyle(color: Colors.white70, fontSize: 14)),
+                        const Divider(color: Colors.white24, height: 30),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            const Text('رقم المرجع:', style: TextStyle(color: Colors.white60, fontSize: 12)),
+                            const SizedBox(width: 8),
+                            Text(widget.bookingId.substring(0, 10), style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+                          ],
                         ),
-                        const VerticalDivider(),
-                        const Text('وقع داخل المربع أعلاه', 
-                          style: TextStyle(fontSize: 12, color: Colors.grey)),
                       ],
                     ),
                   ),
-                ],
-              ),
-            ),
-
-            const SizedBox(height: 24),
-
-            // Agreement Checkbox
-            CheckboxListTile(
-              title: const Text('أقر بأنني قرأت كافة الشروط وأوافق عليها'),
-              value: _agreedToTerms,
-              onChanged: (val) => setState(() => _agreedToTerms = val ?? false),
-              activeColor: Colors.teal,
-              controlAffinity: ListTileControlAffinity.leading,
-              contentPadding: EdgeInsets.zero,
-            ),
-
-            const SizedBox(height: 24),
-
-            // Submit Button
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton.icon(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _agreedToTerms ? Colors.teal.shade800 : Colors.grey,
-                  foregroundColor: Colors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 16),
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                 ),
-                onPressed: (_isSigning || _signed || !_agreedToTerms) ? null : _submitSignedContract,
-                icon: _isSigning
-                    ? const SizedBox(width: 20, height: 20, 
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                    : Icon(_signed ? Icons.verified : Icons.gesture),
-                label: Text(_signed ? 'تم التوقيع' : 'اعتماد العقد والتوقيع'),
               ),
-            ),
-            const SizedBox(height: 32),
-          ],
+
+              const SizedBox(height: 32),
+              const Text('بنود الاتفاقية:', 
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: royalBlue)),
+              const SizedBox(height: 16),
+
+              _buildLuxuryClause('1', 'التزام الشركة:', 'يلتزم الطرف الأول (شركة زيارة) بتوفير الخدمة المختارة وفق أعلى معايير الجودة والسلامة.'),
+              _buildLuxuryClause('2', 'مسؤولية العميل:', 'يلتزم الطرف الثاني بتوفير بيئة عمل مناسبة وسداد الرسوم المتفق عليها في وقتها.'),
+              _buildLuxuryClause('3', 'الخصوصية:', 'تلتزم الشركة بالحفاظ على خصوصية بيانات العميل وسرية المعلومات داخل المنزل.'),
+              _buildLuxuryClause('4', 'التوقيع:', 'يعد هذا التوقيع الإلكتروني ملزماً للطرفين وله الحجية القانونية الكاملة.'),
+
+              const SizedBox(height: 32),
+              const Text('منطقة التوقيع الإلكتروني:', 
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: royalBlue)),
+              const SizedBox(height: 12),
+
+              // Signature Pad (Luxury Style)
+              Container(
+                decoration: BoxDecoration(
+                  color: royalBlue,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(color: royalBlue.withOpacity(0.2), blurRadius: 15, offset: const Offset(0, 5)),
+                  ],
+                ),
+                child: Column(
+                  children: [
+                    ClipRRect(
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+                      child: Signature(
+                        controller: _signatureController,
+                        height: 200,
+                        backgroundColor: royalBlue,
+                      ),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                      decoration: const BoxDecoration(
+                        color: Colors.white10,
+                        borderRadius: BorderRadius.vertical(bottom: Radius.circular(20)),
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          TextButton.icon(
+                            onPressed: () => _signatureController.clear(),
+                            icon: const Icon(Icons.refresh, color: Colors.orangeAccent),
+                            label: const Text('إعادة التوقيع', style: TextStyle(color: Colors.white)),
+                          ),
+                          const Text('وقع هنا باللمس', style: TextStyle(color: Colors.white54, fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              const SizedBox(height: 24),
+
+              // Agreement Checkbox
+              Theme(
+                data: ThemeData(unselectedWidgetColor: royalBlue),
+                child: CheckboxListTile(
+                  title: const Text('أقر وأوافق على كافة الشروط المذكورة أعلاه', 
+                    style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: royalBlue)),
+                  value: _agreedToTerms,
+                  onChanged: (val) => setState(() => _agreedToTerms = val ?? false),
+                  activeColor: royalBlue,
+                  controlAffinity: ListTileControlAffinity.leading,
+                  contentPadding: EdgeInsets.zero,
+                ),
+              ),
+
+              const SizedBox(height: 32),
+
+              // Submit Button
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: royalBlue,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    elevation: _agreedToTerms ? 8 : 0,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                  ),
+                  onPressed: (_isSigning || _signed || !_agreedToTerms) ? null : _submitSignedContract,
+                  child: _isSigning
+                      ? const SizedBox(width: 24, height: 24, 
+                          child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                      : Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(_signed ? Icons.check_circle : Icons.draw, size: 24),
+                            const SizedBox(width: 12),
+                            Text(_signed ? 'تم الاعتماد' : 'اعتماد وتوقيع العقد', 
+                              style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                          ],
+                        ),
+                ),
+              ),
+              const SizedBox(height: 48),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildClause(String title, String content) {
+  Widget _buildLuxuryClause(String num, String title, String content) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.only(bottom: 20),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.teal)),
-          const SizedBox(width: 8),
-          Expanded(child: Text(content)),
+          Container(
+            padding: const EdgeInsets.all(8),
+            decoration: const BoxDecoration(color: Color(0xFF1E3A8A), shape: BoxShape.circle),
+            child: Text(num, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 12)),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(title, style: const TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF1E3A8A))),
+                const SizedBox(height: 4),
+                Text(content, style: TextStyle(color: Colors.grey.shade700, height: 1.4)),
+              ],
+            ),
+          ),
         ],
       ),
     );
