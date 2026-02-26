@@ -12,14 +12,24 @@ import 'package:zyiarah/view_model/profile_view_model.dart';
 import 'package:zyiarah/view_model/worker_view_model.dart';
 import 'package:zyiarah/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:zyiarah/firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // 1. Initialize Supabase (Critical)
   await SupabaseConfig.initialize();
   
-  // Initialize Firebase & Notifications (wrapped in try-catch in service)
-  await Firebase.initializeApp();
-  await NotificationService().initialize();
+  // 2. Initialize Firebase (Non-critical on Web for initial UI)
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    await NotificationService().initialize();
+  } catch (e) {
+    debugPrint('Firebase/Notification initialization skipped or failed: $e');
+    // We don't crash the app if notification init fails on some web browsers
+  }
   
   runApp(const ZyiarahApp());
 }

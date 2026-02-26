@@ -30,8 +30,10 @@ class NotificationService {
         // TODO: Send token to Supabase users table to target this device
       }
 
-      // Handle background messages
-      FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      // Handle background messages (Not supported on Web directly like this)
+      if (!kIsWeb) {
+        FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+      }
 
       // Handle foreground messages
       FirebaseMessaging.onMessage.listen((RemoteMessage message) {
