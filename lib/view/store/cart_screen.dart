@@ -83,7 +83,17 @@ class _CartScreenState extends State<CartScreen> {
           }
 
           final cartTotal = storeVm.cartTotal;
-          final finalTotal = (cartTotal - _discountAmount).clamp(0.0, double.infinity);
+          double currentDiscount = 0.0;
+          if (_appliedPromo != null) {
+            if (cartTotal >= _appliedPromo!.minOrderValue) {
+              currentDiscount = _promoService.calculateDiscount(_appliedPromo!, cartTotal);
+            } else {
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                if (mounted) _removePromo();
+              });
+            }
+          }
+          final finalTotal = (cartTotal - currentDiscount).clamp(0.0, double.infinity);
 
           return Column(
             children: [
@@ -181,7 +191,7 @@ class _CartScreenState extends State<CartScreen> {
                             const SizedBox(width: 8),
                             Expanded(
                               child: Text(
-                                'كود "${_appliedPromo!.codeName}" - خصم ${_discountAmount.toStringAsFixed(2)} ريال',
+                                'كود "${_appliedPromo!.codeName}" - خصم ${currentDiscount.toStringAsFixed(2)} ريال',
                                 style: const TextStyle(color: Colors.green, fontWeight: FontWeight.bold),
                               ),
                             ),
@@ -205,13 +215,13 @@ class _CartScreenState extends State<CartScreen> {
                         Text('${cartTotal.toStringAsFixed(2)} ريال'),
                       ],
                     ),
-                    if (_discountAmount > 0) ...[
+                    if (currentDiscount > 0) ...[
                       const SizedBox(height: 4),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('الخصم:', style: TextStyle(color: Colors.green)),
-                          Text('- ${_discountAmount.toStringAsFixed(2)} ريال', style: const TextStyle(color: Colors.green)),
+                          Text('- ${currentDiscount.toStringAsFixed(2)} ريال', style: const TextStyle(color: Colors.green)),
                         ],
                       ),
                     ],
@@ -242,7 +252,7 @@ class _CartScreenState extends State<CartScreen> {
                             : () async {
                                 final success = await storeVm.submitOrder(
                                   promoCodeId: _appliedPromo?.id,
-                                  discountAmount: _discountAmount,
+                                  discountAmount: currentDiscount,
                                 );
                                 if (success && context.mounted) {
                                   ScaffoldMessenger.of(context).showSnackBar(

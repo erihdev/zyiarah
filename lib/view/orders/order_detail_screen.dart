@@ -5,6 +5,8 @@ import 'package:zyiarah/data/models/store_cart_item_model.dart';
 import 'package:zyiarah/data/models/booking_model.dart';
 import 'package:zyiarah/view_model/order_view_model.dart';
 
+import 'live_tracking_map.dart';
+
 class OrderDetailScreen extends StatefulWidget {
   final String bookingId;
 
@@ -120,7 +122,24 @@ class _OrderDetailScreenState extends State<OrderDetailScreen> {
             ),
           ),
           
-          const SizedBox(height: 24),
+          if (_order!.status == 'on_the_way' && _order!.workerId != null) ...[
+            const SizedBox(height: 16),
+            const Text('تتبع السائق مباشرة:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.indigo)),
+            const SizedBox(height: 12),
+            Container(
+              height: 250,
+              width: double.infinity,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.indigo.shade100, width: 2),
+                boxShadow: const [BoxShadow(color: Colors.black12, blurRadius: 8, offset: Offset(0, 4))],
+              ),
+              clipBehavior: Clip.antiAlias,
+              child: LiveTrackingMap(workerId: _order!.workerId!),
+            ),
+            const SizedBox(height: 24),
+          ],
+
           const Text('المنتجات / الخدمات:', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           const SizedBox(height: 12),
 

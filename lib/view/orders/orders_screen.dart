@@ -93,7 +93,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
               itemCount: orderVm.orders.length,
               itemBuilder: (context, index) {
                 final order = orderVm.orders[index];
-                final isStoreOrder = (order as dynamic).toMap()['type'] == 'store_order' || order.totalPrice > 0; // Simple heuristic since we removed type
+                final isStoreOrder = order.addressId == null && order.totalPrice > 0;
 
                 return Card(
                   margin: const EdgeInsets.only(bottom: 12),

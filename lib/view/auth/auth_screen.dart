@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zyiarah/view_model/auth_view_model.dart';
-import 'package:zyiarah/view/home/home_screen.dart';
+import 'package:zyiarah/view/auth/auth_gate_screen.dart';
 import 'package:zyiarah/core/widgets/luxury_loading_overlay.dart';
 import 'package:zyiarah/core/widgets/fade_page_route.dart';
+
+import 'package:zyiarah/core/theme/app_colors.dart';
 
 class AuthScreen extends StatefulWidget {
   const AuthScreen({super.key});
@@ -54,27 +56,17 @@ class _AuthScreenState extends State<AuthScreen> {
                     children: [
                       // Logo Area
                       Center(
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            gradient: LinearGradient(
-                              colors: [Colors.teal.shade400, Colors.teal.shade800],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            boxShadow: [
-                              BoxShadow(color: Colors.teal.withOpacity(0.3), blurRadius: 20, spreadRadius: 3),
-                            ],
-                          ),
-                          child: const Icon(Icons.spa_outlined, size: 50, color: Colors.white),
+                        child: Image.asset(
+                          'assets/images/logo.jpg', 
+                          height: 120, 
+                          fit: BoxFit.contain,
+                          errorBuilder: (c, e, s) => const Icon(Icons.spa, size: 80, color: AppColors.primary),
                         ),
                       ),
                       const SizedBox(height: 30),
                       const Text(
                         'أهلاً بك في زيارة',
-                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+                        style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold, color: AppColors.primary),
                         textAlign: TextAlign.center,
                       ),
                       const SizedBox(height: 10),
@@ -88,64 +80,72 @@ class _AuthScreenState extends State<AuthScreen> {
                       const SizedBox(height: 40),
 
                       if (!authViewModel.isOtpSent) ...[
-                        TextField(
-                          controller: _phoneController,
-                          keyboardType: TextInputType.phone,
-                          textAlign: TextAlign.left,
-                          textDirection: TextDirection.ltr,
-                          decoration: InputDecoration(
-                            hintText: 'مثال: +9665XXXXXXXX',
-                            prefixIcon: const Icon(Icons.phone),
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(primary: AppColors.accent, onSurface: AppColors.primary),
                           ),
-                          onChanged: authViewModel.setPhoneNumber,
+                          child: TextField(
+                            controller: _phoneController,
+                            keyboardType: TextInputType.phone,
+                            textAlign: TextAlign.left,
+                            textDirection: TextDirection.ltr,
+                            cursorColor: AppColors.accentDark,
+                            decoration: InputDecoration(
+                              hintText: 'مثال: +9665XXXXXXXX',
+                              prefixIcon: const Icon(Icons.phone, color: AppColors.primary),
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                              ),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
+                            onChanged: authViewModel.setPhoneNumber,
+                          ),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
                           onPressed: authViewModel.isLoading ? null : () => authViewModel.sendOtp(),
-                          child: const Text('إرسال رمز التحقق', style: TextStyle(fontSize: 18)),
+                          child: const Text('إرسال رمز التحقق', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                       ] else ...[
-                        TextField(
-                          controller: _otpController,
-                          keyboardType: TextInputType.number,
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(letterSpacing: 8, fontSize: 22),
-                          maxLength: 6,
-                          decoration: InputDecoration(
-                            hintText: '------',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                        Theme(
+                          data: Theme.of(context).copyWith(
+                            colorScheme: ColorScheme.light(primary: AppColors.accent),
+                          ),
+                          child: TextField(
+                            controller: _otpController,
+                            keyboardType: TextInputType.number,
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(letterSpacing: 8, fontSize: 22, color: AppColors.primary),
+                            maxLength: 6,
+                            cursorColor: AppColors.accentDark,
+                            decoration: InputDecoration(
+                              hintText: '------',
+                              focusedBorder: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                borderSide: const BorderSide(color: AppColors.accent, width: 2),
+                              ),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 20),
                         ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.teal,
-                            foregroundColor: Colors.white,
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          ),
                           onPressed: authViewModel.isLoading
                               ? null
                               : () async {
                                   final success = await authViewModel.verifyOtp(_otpController.text);
                                   if (success && context.mounted) {
                                     Navigator.of(context).pushReplacement(
-                                      FadePageRoute(page: const HomeScreen()),
+                                      FadePageRoute(page: const AuthGateScreen()),
                                     );
                                   }
                                 },
-                          child: const Text('تأكيد الدخول', style: TextStyle(fontSize: 18)),
+                          child: const Text('تأكيد الدخول', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
                         ),
                         TextButton(
                           onPressed: authViewModel.isLoading ? null : authViewModel.resetAuth,
-                          child: const Text('تعديل رقم الجوال', style: TextStyle(color: Colors.teal)),
+                          child: const Text('تعديل رقم الجوال', style: TextStyle(color: AppColors.primary)),
                         ),
                       ],
                     ],

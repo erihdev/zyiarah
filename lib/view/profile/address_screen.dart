@@ -3,6 +3,8 @@ import 'package:provider/provider.dart';
 import 'package:zyiarah/view_model/profile_view_model.dart';
 import 'package:zyiarah/data/models/address_model.dart';
 
+import 'map_address_picker.dart';
+
 class AddressScreen extends StatefulWidget {
   const AddressScreen({super.key});
 
@@ -12,49 +14,24 @@ class AddressScreen extends StatefulWidget {
 
 class _AddressScreenState extends State<AddressScreen> {
   
-  void _showAddAddressDialog(BuildContext context, ProfileViewModel profileVm) {
-    final TextEditingController addressController = TextEditingController();
-    
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('إضافة عنوان جديد'),
-          content: TextField(
-            controller: addressController,
-            decoration: const InputDecoration(
-              labelText: 'العنوان بالتفصيل',
-              hintText: 'حي العارض، شارع الملك فهد...',
-              border: OutlineInputBorder(),
-            ),
-            maxLines: 2,
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context),
-              child: const Text('إلغاء'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, foregroundColor: Colors.white),
-              onPressed: () async {
-                final newAddress = addressController.text.trim();
-                if (newAddress.isNotEmpty) {
-                  Navigator.pop(context);
-                  // For now, mock coordinates 0.0, 0.0 until map picking is implemented
-                  final success = await profileVm.addAddress(0.0, 0.0, newAddress);
-                  if (success && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('تم إضافة العنوان بنجاح')),
-                    );
-                  }
-                }
-              },
-              child: const Text('إضافة'),
-            ),
-          ],
-        );
-      },
+  Future<void> _showAddAddressDialog(BuildContext context, ProfileViewModel profileVm) async {
+    final result = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const MapAddressPicker()),
     );
+
+    if (result != null && result is Map<String, dynamic> && context.mounted) {
+      final double lat = result['lat'];
+      final double lng = result['lng'];
+      final String addressText = result['address'];
+
+      final success = await profileVm.addAddress(lat, lng, addressText);
+      if (success && context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('تم إضافة الموقع بنجاح')),
+        );
+      }
+    }
   }
 
   @override

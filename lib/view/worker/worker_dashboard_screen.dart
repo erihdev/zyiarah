@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:zyiarah/core/theme/app_colors.dart';
 import 'package:zyiarah/view_model/worker_view_model.dart';
 import 'package:zyiarah/data/models/booking_model.dart';
 
@@ -33,7 +34,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     switch (status) {
       case 'paid_and_confirmed': return Colors.blue;
       case 'on_the_way': return Colors.orange;
-      case 'in_progress': return Colors.indigo;
+      case 'in_progress': return AppColors.primary;
       case 'completed': return Colors.green;
       default: return Colors.grey;
     }
@@ -62,9 +63,26 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('مهام اليوم'),
-        backgroundColor: Colors.indigo,
+        backgroundColor: AppColors.primary,
         foregroundColor: Colors.white,
         actions: [
+          Consumer<WorkerViewModel>(
+            builder: (context, vm, child) {
+              return Row(
+                children: [
+                  Text(vm.isOnline ? 'متصل' : 'غير متصل', style: const TextStyle(fontSize: 12)),
+                  Switch(
+                    value: vm.isOnline,
+                    activeColor: AppColors.accent,
+                    inactiveThumbColor: Colors.grey,
+                    onChanged: (val) {
+                      vm.toggleOnline();
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => context.read<WorkerViewModel>().fetchMyTasks(),
@@ -74,7 +92,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
       body: Consumer<WorkerViewModel>(
         builder: (context, workerVm, child) {
           if (workerVm.isLoading && workerVm.assignedOrders.isEmpty) {
-            return const Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator(color: AppColors.primary));
           }
 
           if (workerVm.assignedOrders.isEmpty) {
@@ -144,7 +162,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
                             width: double.infinity,
                             child: ElevatedButton.icon(
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: nextStatus == 'completed' ? Colors.green : Colors.indigo,
+                                backgroundColor: nextStatus == 'completed' ? Colors.green : AppColors.primary,
                                 foregroundColor: Colors.white,
                               ),
                               onPressed: () async {
@@ -175,3 +193,4 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
     );
   }
 }
+

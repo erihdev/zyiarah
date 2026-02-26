@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zyiarah/core/config/supabase_config.dart';
 import 'package:zyiarah/view/auth/auth_screen.dart';
+import 'package:zyiarah/view/auth/auth_gate_screen.dart';
 import 'package:zyiarah/view/home/home_screen.dart';
 import 'package:zyiarah/view_model/auth_view_model.dart';
 import 'package:zyiarah/view_model/wallet_view_model.dart';
@@ -13,6 +14,8 @@ import 'package:zyiarah/view_model/worker_view_model.dart';
 import 'package:zyiarah/services/notification_service.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:zyiarah/firebase_options.dart';
+
+import 'package:zyiarah/core/theme/app_colors.dart';
 
 void main() {
   runApp(const BootStrapper());
@@ -74,14 +77,16 @@ class _BootStrapperState extends State<BootStrapper> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       home: Scaffold(
-        backgroundColor: const Color(0xFF1E3A8A), // Royal Blue
+        backgroundColor: AppColors.primary,
         body: Center(
           child: Padding(
             padding: const EdgeInsets.all(32.0),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const CircularProgressIndicator(color: Colors.white),
+                Image.asset('assets/images/logo.jpg', width: 200, fit: BoxFit.contain, errorBuilder: (c, e, s) => const Icon(Icons.spa, size: 100, color: Colors.white)),
+                const SizedBox(height: 24),
+                const CircularProgressIndicator(color: AppColors.accent),
                 const SizedBox(height: 24),
                 Text(_status, 
                   textAlign: TextAlign.center,
@@ -136,9 +141,27 @@ class ZyiarahApp extends StatelessWidget {
         title: 'Zyiarah',
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: Colors.teal),
+          colorScheme: ColorScheme.fromSeed(seedColor: AppColors.primary, primary: AppColors.primary, secondary: AppColors.accent),
+          scaffoldBackgroundColor: AppColors.background,
+          appBarTheme: const AppBarTheme(
+            backgroundColor: AppColors.primary,
+            foregroundColor: Colors.white,
+            elevation: 0,
+          ),
+          elevatedButtonTheme: ElevatedButtonThemeData(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent,
+              foregroundColor: AppColors.primaryDark,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+            ),
+          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+            selectedItemColor: AppColors.accent,
+            unselectedItemColor: Colors.grey,
+            backgroundColor: Colors.white,
+          ),
           useMaterial3: true,
-          fontFamily: 'Tajawal', // Suggested Arabic font
+          fontFamily: 'Tajawal',
         ),
         builder: (context, child) {
           return Directionality(
@@ -154,7 +177,7 @@ class ZyiarahApp extends StatelessWidget {
   Widget _getInitialScreen() {
     final session = Supabase.instance.client.auth.currentSession;
     if (session != null) {
-      return const HomeScreen();
+      return const AuthGateScreen();
     } else {
       return const AuthScreen();
     }

@@ -3,9 +3,12 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../data/models/booking_model.dart';
 import '../services/order_service.dart';
 
+import '../services/tracking_service.dart';
+
 class WorkerViewModel extends ChangeNotifier {
   final _supabase = Supabase.instance.client;
   final _orderService = OrderService();
+  final _trackingService = TrackingService();
   RealtimeChannel? _subscription;
 
   List<BookingModel> _assignedOrders = [];
@@ -14,13 +17,37 @@ class WorkerViewModel extends ChangeNotifier {
   bool _isLoading = false;
   bool get isLoading => _isLoading;
 
+  bool _isOnline = false;
+  bool get isOnline => _isOnline;
+
   String? _errorMessage;
   String? get errorMessage => _errorMessage;
 
   @override
   void dispose() {
     _subscription?.unsubscribe();
+    _trackingService.stopTracking();
     super.dispose();
+  }
+
+  Future<void> toggleOnline() async {
+    final user = _supabase.auth.currentUser;
+    if (user == null) return;
+    
+    if (_isOnline) {
+      _trackingService.stopTracking();
+      _isOnline = false;
+      _errorMessage = null;
+    } else {
+      try {
+        await _trackingService.startTracking(user.id);
+        _isOnline = true;
+        _errorMessage = null;
+      } catch (e) {
+        _errorMessage = 'فشل تفعيل الموقع: ${e.toString()}';
+      }
+    }
+    notifyListeners();
   }
 
   Future<void> fetchMyTasks() async {

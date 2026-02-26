@@ -72,19 +72,7 @@
   <div class="loading">
     <div class="loader"></div>
   </div>
-  <script>
-    window.addEventListener('load', function (ev) {
-      // Completely bypassing service worker to solve aggressive caching
-      _flutter.loader.loadEntrypoint({
-        onEntrypointLoaded: function (engineInitializer) {
-          engineInitializer.initializeEngine().then(function (appRunner) {
-            appRunner.runApp();
-          });
-        }
-      });
-    });
-  </script>
-  <script src="flutter_bootstrap.js?v=2.0.0" async></script>
+  <script src="flutter_bootstrap.js?v=3.0.0" async></script>
 </body>
 
 </html>

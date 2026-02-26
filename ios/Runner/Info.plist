@@ -66,5 +66,19 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+    <key>ITSAppUsesNonExemptEncryption</key>
+    <false/>
+    <key>UIBackgroundModes</key>
+    <array>
+        <string>fetch</string>
+        <string>remote-notification</string>
+        <string>location</string>
+    </array>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>يحتاج التطبيق لصلاحية الموقع لتتبع مسار السائق وعرضه للعميل والإدارة.</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>يحتاج التطبيق لصلاحية الموقع في الخلفية لتتبع مسار السائق وعرضه للعميل والإدارة.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>يحتاج التطبيق لصلاحية الموقع لتتبع مسار السائق وعرضه للعميل والإدارة.</string>
 </dict>
 </plist>
