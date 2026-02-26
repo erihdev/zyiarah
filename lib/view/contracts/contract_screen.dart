@@ -110,7 +110,7 @@ class _ContractScreenState extends State<ContractScreen> {
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
-        title: const Text('العقد الرقمي الموحد', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: const Text('العقد الرقمي الموحد (v1.0.7)', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
         backgroundColor: royalBlue,
         foregroundColor: Colors.white,
         elevation: 0,

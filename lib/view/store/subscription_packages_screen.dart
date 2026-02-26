@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:zyiarah/view/contracts/contract_screen.dart';
 
 class SubscriptionPackagesScreen extends StatelessWidget {
@@ -98,7 +99,7 @@ class SubscriptionPackagesScreen extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(context, MaterialPageRoute(
                           builder: (context) => ContractScreen(
-                            bookingId: '00000000-0000-0000-0000-${DateTime.now().millisecondsSinceEpoch}',
+                            bookingId: const Uuid().v4(),
                             serviceType: 'اشتراك ساعة - ${pkg['title']} (${pkg['visits']})',
                           ),
                         ));

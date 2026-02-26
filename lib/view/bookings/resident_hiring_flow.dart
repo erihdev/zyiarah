@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uuid/uuid.dart';
 import 'package:zyiarah/core/widgets/fade_page_route.dart';
 import 'package:zyiarah/view/contracts/contract_screen.dart';
 
@@ -266,7 +267,7 @@ class _ResidentHiringFlowState extends State<ResidentHiringFlow> {
       // Go to contract screen
       Navigator.push(context, FadePageRoute(
         page: ContractScreen(
-          bookingId: '00000000-0000-0000-0001-${DateTime.now().millisecondsSinceEpoch}', 
+          bookingId: const Uuid().v4(), 
           serviceType: 'عاملة مقيمة ($_selectedNationality) - $_selectedDuration شهر - $_selectedPackage',
         )
       ));
