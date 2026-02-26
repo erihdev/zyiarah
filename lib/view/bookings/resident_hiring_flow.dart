@@ -109,7 +109,7 @@ class _ResidentHiringFlowState extends State<ResidentHiringFlow> {
         bool isSelected = _selectedNationality == item['name'];
         return Card(
           elevation: isSelected ? 4 : 1,
-          margin: const EdgeInsets.bottom(12),
+          margin: const EdgeInsets.only(bottom: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: isSelected ? Colors.teal : Colors.transparent, width: 2),
@@ -181,7 +181,7 @@ class _ResidentHiringFlowState extends State<ResidentHiringFlow> {
         final pkg = _packages[index];
         bool isSelected = _selectedPackage == pkg['name'];
         return Card(
-          margin: const EdgeInsets.bottom(15),
+          margin: const EdgeInsets.only(bottom: 15),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(color: isSelected ? Colors.teal : Colors.transparent, width: 2),

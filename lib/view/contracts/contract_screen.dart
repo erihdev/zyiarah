@@ -54,7 +54,7 @@ class _ContractScreenState extends State<ContractScreen> {
       final user = supabase.auth.currentUser;
 
       // 1. Export signature to image
-      final Uint8List? signatureImage = await _signatureController.toUint8List();
+      final Uint8List? signatureImage = await _signatureController.toPngBytes();
       
       String? signatureUrl;
       if (signatureImage != null) {
