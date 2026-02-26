@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zyiarah/view_model/order_view_model.dart';
-import 'package:zyiarah/data/models/booking_model.dart';
+
 import 'order_detail_screen.dart';
 import 'package:zyiarah/view/payment/payment_screen.dart';
 
@@ -102,7 +102,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                   child: ListTile(
                     contentPadding: const EdgeInsets.all(16),
                     leading: CircleAvatar(
-                      backgroundColor: _getStatusColor(order.status).withOpacity(0.2),
+                      backgroundColor: _getStatusColor(order.status).withValues(alpha: 0.2),
                       child: Icon(
                         isStoreOrder ? Icons.shopping_bag : Icons.home_repair_service,
                         color: _getStatusColor(order.status),
@@ -123,7 +123,7 @@ class _OrdersScreenState extends State<OrdersScreen> {
                         Container(
                           padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                           decoration: BoxDecoration(
-                            color: _getStatusColor(order.status).withOpacity(0.1),
+                            color: _getStatusColor(order.status).withValues(alpha: 0.1),
                             borderRadius: BorderRadius.circular(8),
                           ),
                           child: Text(

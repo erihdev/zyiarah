@@ -23,7 +23,7 @@ class LuxuryLoadingOverlay extends StatelessWidget {
             duration: const Duration(milliseconds: 300),
             opacity: isLoading ? 1.0 : 0.0,
             child: Container(
-              color: Colors.black.withOpacity(0.65),
+              color: Colors.black.withValues(alpha: 0.65),
               child: const Center(
                 child: AnimatedBrandLogo(size: 120),
               ),

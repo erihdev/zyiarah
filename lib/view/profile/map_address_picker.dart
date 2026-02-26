@@ -66,11 +66,9 @@ class _MapAddressPickerState extends State<MapAddressPicker> {
   }
 
   void _onPositionChanged(MapCamera camera, bool hasGesture) {
-    if (camera.center != null) {
-      _centerPosition = camera.center;
-      // Debounce would be better here for production, but calling directly for simplicity
-      // Or we can just call it only when the map stops moving.
-    }
+    _centerPosition = camera.center;
+    // Debounce would be better here for production, but calling directly for simplicity
+    // Or we can just call it only when the map stops moving.
   }
 
   @override

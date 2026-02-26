@@ -84,7 +84,7 @@ class _AssignWorkerDialogState extends State<AssignWorkerDialog> {
                             setState(() => _selectedWorkerId = worker.id);
                           },
                           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                          tileColor: isSelected ? AppColors.accent.withOpacity(0.1) : null,
+                          tileColor: isSelected ? AppColors.accent.withValues(alpha: 0.1) : null,
                           leading: CircleAvatar(
                             backgroundColor: isSelected ? AppColors.primary : Colors.grey.shade300,
                             child: Icon(Icons.person, color: isSelected ? Colors.white : Colors.grey.shade700),

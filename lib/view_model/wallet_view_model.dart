@@ -29,17 +29,17 @@ class WalletViewModel extends ChangeNotifier {
     _setLoading(true);
     try {
       try {
-        _balance = await _walletService.getWalletBalance(_userId!);
+        _balance = await _walletService.getWalletBalance(_userId);
       } catch (e) {
          // If a user doesn't exist yet or RLS blocks it, default to 0.0
-         print('Could not fetch wallet balance, defaulting to 0.0: $e');
+         debugPrint('Could not fetch wallet balance, defaulting to 0.0: $e');
         _balance = 0.0;
       }
       
       try {
-        _transactions = await _walletService.getTransactionHistory(_userId!);
+        _transactions = await _walletService.getTransactionHistory(_userId);
       } catch (e) {
-         print('Could not fetch transaction history: $e');
+         debugPrint('Could not fetch transaction history: $e');
         _transactions = [];
       }
       

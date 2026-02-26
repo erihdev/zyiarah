@@ -45,7 +45,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       
     } catch (e) {
       setState(() => _isLoading = false);
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('خطأ: ${e.toString()}')),
         );
@@ -77,7 +77,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         final userDoc = await Supabase.instance.client.from('users').select('role').eq('id', user.id).maybeSingle();
         
         if (userDoc != null && userDoc['role'] == 'admin') {
-          if (context.mounted) {
+          if (mounted) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(builder: (context) => const AdminDashboardScreen()),
             );
@@ -85,7 +85,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
         } else {
           // Not an admin
           await Supabase.instance.client.auth.signOut();
-          if (context.mounted) {
+          if (mounted) {
              setState(() {
               _isLoading = false;
               _isOtpSent = false;
@@ -102,7 +102,7 @@ class _AdminLoginScreenState extends State<AdminLoginScreen> {
       }
     } catch (e) {
       setState(() => _isLoading = false);
-      if (context.mounted) {
+      if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('رمز غير صحيح أو حدث خطأ: ${e.toString()}')),
         );

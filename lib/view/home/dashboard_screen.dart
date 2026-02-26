@@ -112,7 +112,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(15.0),
                     gradient: LinearGradient(
-                      colors: [Colors.black.withOpacity(0.5), Colors.transparent],
+                      colors: [Colors.black.withValues(alpha: 0.5), Colors.transparent],
                       begin: Alignment.bottomCenter,
                       end: Alignment.topCenter,
                     ),
@@ -174,7 +174,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(15),
                         boxShadow: [
-                          BoxShadow(color: Colors.grey.withOpacity(0.15), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 3)),
+                          BoxShadow(color: Colors.grey.withValues(alpha: 0.15), spreadRadius: 1, blurRadius: 5, offset: const Offset(0, 3)),
                         ],
                         border: Border.all(color: Colors.grey.shade100),
                       ),
@@ -184,7 +184,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           Container(
                             padding: const EdgeInsets.all(14),
                             decoration: BoxDecoration(
-                              color: service['color'].withOpacity(0.1),
+                              color: service['color'].withValues(alpha: 0.1),
                               shape: BoxShape.circle,
                             ),
                             child: Icon(service['icon'], color: service['color'], size: 32),

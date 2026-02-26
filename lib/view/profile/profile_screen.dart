@@ -115,7 +115,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Text(
-                        user.name.isEmpty ? 'مستخدم جديد' : user.name,
+                        (user.name?.isEmpty ?? true) ? 'مستخدم جديد' : user.name!,
                         style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
                       ),
                       IconButton(
@@ -193,7 +193,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
         leading: Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: Colors.teal.withOpacity(0.1),
+            color: Colors.teal.withValues(alpha: 0.1),
             shape: BoxShape.circle,
           ),
           child: Icon(icon, color: Colors.teal),

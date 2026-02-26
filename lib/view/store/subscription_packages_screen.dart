@@ -47,13 +47,13 @@ class SubscriptionPackagesScreen extends StatelessWidget {
             margin: const EdgeInsets.only(bottom: 20),
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [pkg['color'], pkg['color'].withOpacity(0.8)],
+                colors: [pkg['color'], pkg['color'].withValues(alpha: 0.8)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(20),
               boxShadow: [
-                BoxShadow(color: pkg['color'].withOpacity(0.3), blurRadius: 10, offset: const Offset(0, 5)),
+                BoxShadow(color: pkg['color'].withValues(alpha: 0.3), blurRadius: 10, offset: const Offset(0, 5)),
               ],
             ),
             child: Padding(

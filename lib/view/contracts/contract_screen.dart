@@ -85,6 +85,7 @@ class _ContractScreenState extends State<ContractScreen> {
       if (mounted) {
         _showMsg('تم اعتماد العقد بنجاح', isError: false);
         await Future.delayed(const Duration(seconds: 1));
+        if (!mounted) return;
         Navigator.pop(context, true);
       }
     } catch (e) {
@@ -121,7 +122,7 @@ class _ContractScreenState extends State<ContractScreen> {
           gradient: LinearGradient(
             begin: Alignment.topCenter,
             end: Alignment.bottomCenter,
-            colors: [royalBlue.withOpacity(0.05), Colors.white],
+            colors: [royalBlue.withValues(alpha: 0.05), Colors.white],
           ),
         ),
         child: SingleChildScrollView(
@@ -134,7 +135,7 @@ class _ContractScreenState extends State<ContractScreen> {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: royalBlue.withOpacity(0.1),
+                    color: royalBlue.withValues(alpha: 0.1),
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Row(
@@ -158,10 +159,10 @@ class _ContractScreenState extends State<ContractScreen> {
                     width: double.infinity,
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
-                      color: royalBlue.withOpacity(0.9),
+                      color: royalBlue.withValues(alpha: 0.9),
                       borderRadius: BorderRadius.circular(24),
                       boxShadow: [
-                        BoxShadow(color: royalBlue.withOpacity(0.3), blurRadius: 20, offset: const Offset(0, 10)),
+                        BoxShadow(color: royalBlue.withValues(alpha: 0.3), blurRadius: 20, offset: const Offset(0, 10)),
                       ],
                     ),
                     child: Column(
@@ -210,7 +211,7 @@ class _ContractScreenState extends State<ContractScreen> {
                   color: royalBlue,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
-                    BoxShadow(color: royalBlue.withOpacity(0.2), blurRadius: 15, offset: const Offset(0, 5)),
+                    BoxShadow(color: royalBlue.withValues(alpha: 0.2), blurRadius: 15, offset: const Offset(0, 5)),
                   ],
                 ),
                 child: Column(

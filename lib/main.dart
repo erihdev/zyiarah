@@ -4,7 +4,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zyiarah/core/config/supabase_config.dart';
 import 'package:zyiarah/view/auth/auth_screen.dart';
 import 'package:zyiarah/view/auth/auth_gate_screen.dart';
-import 'package:zyiarah/view/home/home_screen.dart';
+
 import 'package:zyiarah/view/admin/admin_login_screen.dart';
 import 'package:zyiarah/view_model/auth_view_model.dart';
 import 'package:zyiarah/view_model/wallet_view_model.dart';
@@ -98,7 +98,7 @@ class _BootStrapperState extends State<BootStrapper> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: Colors.red.withOpacity(0.1),
+                      color: Colors.red.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: Colors.redAccent),
                     ),

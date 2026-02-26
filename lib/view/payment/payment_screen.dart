@@ -70,9 +70,11 @@ class _PaymentScreenState extends State<PaymentScreen> {
           ),
         );
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('فشل تحديث الطلب: ${orderVm.errorMessage}')),
-        );
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('فشل تحديث الطلب: ${orderVm.errorMessage}')),
+          );
+        }
       }
     }
 

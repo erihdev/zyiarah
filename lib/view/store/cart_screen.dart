@@ -15,7 +15,6 @@ class _CartScreenState extends State<CartScreen> {
   final _promoController = TextEditingController();
   final _promoService = PromoService();
   PromoCodeModel? _appliedPromo;
-  double _discountAmount = 0;
   bool _promoLoading = false;
   String? _promoError;
 
@@ -33,16 +32,13 @@ class _CartScreenState extends State<CartScreen> {
       _promoLoading = true;
       _promoError = null;
       _appliedPromo = null;
-      _discountAmount = 0;
     });
 
     try {
       final promo = await _promoService.validatePromoCode(code, cartTotal);
       if (promo != null) {
-        final discount = _promoService.calculateDiscount(promo, cartTotal);
         setState(() {
           _appliedPromo = promo;
-          _discountAmount = discount;
         });
       }
     } catch (e) {
@@ -57,7 +53,6 @@ class _CartScreenState extends State<CartScreen> {
   void _removePromo() {
     setState(() {
       _appliedPromo = null;
-      _discountAmount = 0;
       _promoController.clear();
       _promoError = null;
     });

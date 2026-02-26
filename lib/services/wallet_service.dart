@@ -1,6 +1,6 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:zyiarah/data/models/wallet_transaction_model.dart';
-import 'package:zyiarah/data/models/user_model.dart';
+
 
 class WalletService {
   final SupabaseClient _supabase = Supabase.instance.client;
@@ -58,7 +58,7 @@ class WalletService {
 
       return true;
     } catch (e) {
-      print('Error in wallet transaction: $e');
+      debugPrint('Error in wallet transaction: $e');
       return false;
     }
   }

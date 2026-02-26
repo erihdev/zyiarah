@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:zyiarah/core/theme/app_colors.dart';
 import 'package:zyiarah/view_model/worker_view_model.dart';
-import 'package:zyiarah/data/models/booking_model.dart';
+
 
 class WorkerDashboardScreen extends StatefulWidget {
   const WorkerDashboardScreen({super.key});
@@ -73,7 +73,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
                   Text(vm.isOnline ? 'متصل' : 'غير متصل', style: const TextStyle(fontSize: 12)),
                   Switch(
                     value: vm.isOnline,
-                    activeColor: AppColors.accent,
+                    activeThumbColor: AppColors.accent,
                     inactiveThumbColor: Colors.grey,
                     onChanged: (val) {
                       vm.toggleOnline();
@@ -137,7 +137,7 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                               decoration: BoxDecoration(
-                                color: _getStatusColor(order.status).withOpacity(0.1),
+                                color: _getStatusColor(order.status).withValues(alpha: 0.1),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Text(

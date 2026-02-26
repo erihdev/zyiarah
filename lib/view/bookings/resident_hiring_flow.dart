@@ -58,7 +58,7 @@ class _ResidentHiringFlowState extends State<ResidentHiringFlow> {
   Widget _buildStepProgress() {
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 20),
-      color: Colors.teal.shade50.withOpacity(0.5),
+      color: Colors.teal.shade50.withValues(alpha: 0.5),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: List.generate(3, (index) {

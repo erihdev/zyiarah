@@ -20,7 +20,7 @@ class AuthViewModel extends ChangeNotifier {
     _phoneNumber = phone;
     // Simple validation (can be expanded based on local phone format)
     if (!_phoneNumber.startsWith('+')) {
-       _phoneNumber = '+966' + (_phoneNumber.startsWith('0') ? _phoneNumber.substring(1) : _phoneNumber);
+       _phoneNumber = '+966${_phoneNumber.startsWith('0') ? _phoneNumber.substring(1) : _phoneNumber}';
     }
   }
 
